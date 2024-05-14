@@ -1,13 +1,17 @@
-import { Image, ScrollView, Text, View } from "react-native";
+import { Alert, Image, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import images from "@/constants/images";
 import FormField from "@/components/FormField";
 import { useState } from "react";
 import CustomButton from "@/components/CustomButton";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
+import { getCurrentUser, signIn } from "@/lib/appwrite";
+import { GlobalContextType, useGlobalContext } from "@/context/GlobalProvider";
 
 const SignIn = () => {
+    const { setUser, setIsLoggedIn } = useGlobalContext() as GlobalContextType;
+
     const [form, setForm] = useState({
         email: "",
         password: "",
@@ -15,12 +19,32 @@ const SignIn = () => {
 
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const submit = () => {};
+    const submit = async () => {
+        if (!form.email || !form.password) {
+            Alert.alert("Error", "Please fill in all fields");
+        }
+
+        setIsSubmitting(true);
+
+        try {
+            await signIn(form.email, form.password);
+            const result = await getCurrentUser();
+            setUser(result);
+            setIsLoggedIn(true);
+
+            // set it to global state
+            router.replace("/home");
+        } catch (error: string | any) {
+            Alert.alert("Error", error.message);
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
 
     return (
         <SafeAreaView className="bg-primary h-full">
             <ScrollView>
-                <View className="w-full justify-center h-full px-4 my-6">
+                <View className="w-full justify-center min-h-[84vh] px-4 my-6">
                     <Image
                         source={images.logo}
                         resizeMode="contain"
@@ -54,7 +78,7 @@ const SignIn = () => {
                     <CustomButton
                         title="Sign in"
                         handlePress={submit}
-                        containerStyles="mt-7"
+                        containerStyles="mt-14"
                         isLoading={isSubmitting}
                     />
 
