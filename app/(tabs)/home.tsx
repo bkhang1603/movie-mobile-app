@@ -6,20 +6,23 @@ import SearchInput from "@/components/SearchInput";
 import Trending from "@/components/Trending";
 import EmptyState from "@/components/EmptyState";
 import { useState } from "react";
-import { getAllPosts, getCurrentUser, getLatestPosts } from "@/lib/appwrite";
+import { getAllPosts, getLatestPosts } from "@/lib/appwrite";
 import useAppwrite from "@/lib/useAppwrite";
 import VideoCard from "@/components/VideoCard";
+import { useGlobalContext } from "@/context/GlobalProvider";
 
 const Home = () => {
+    const { user }: any = useGlobalContext();
     const { data: posts, refetch } = useAppwrite(getAllPosts);
-    const { data: latestPosts } = useAppwrite(getLatestPosts);
-    const { data: user } = useAppwrite(getCurrentUser);
+    const { data: latestPosts, refetch: refetchLatestData } =
+        useAppwrite(getLatestPosts);
 
     const [refreshing, setRefreshing] = useState(false);
 
     const onRefresh = async () => {
         setRefreshing(true);
         await refetch();
+        await refetchLatestData();
 
         // re call the api -> if any videos appear
         setRefreshing(false);
@@ -44,11 +47,11 @@ const Home = () => {
                         <View className="flex justify-between items-start flex-row">
                             <View>
                                 <Text className="font-pmedium text-sm text-gray-100">
-                                    Welcome Back
+                                    Welcome back,
                                 </Text>
 
                                 <Text className="text-2xl font-psemibold text-white">
-                                    {user[0].username}
+                                    {user[0]?.username || "User"}
                                 </Text>
                             </View>
 

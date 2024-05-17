@@ -3,7 +3,7 @@ import { Alert } from "react-native";
 import { Models } from "react-native-appwrite/src";
 
 const useAppwrite = (fn: () => Promise<Models.Document[]>) => {
-    const [data, setData] = useState<Models.Document[]>([]); // [1, 2, 3
+    const [data, setData] = useState<Models.Document[]>([]);
     const [isLoading, setIsLoading] = useState(false); // false
 
     const fetchData = async () => {

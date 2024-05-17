@@ -6,10 +6,8 @@ export type GlobalContextType = {
     isLoading: boolean;
     isLoggedIn: boolean;
     setIsLoggedIn: (value: boolean) => void;
-    user: Models.Document | Models.DocumentList<Models.Document> | null; // Replace 'DocumentList<Document>' with 'Document'
-    setUser: (
-        value: Models.Document | Models.DocumentList<Models.Document> | null
-    ) => void; // Replace 'DocumentList<Document>' with 'Document'
+    user: Models.Document | Models.Document[] | null; // Replace 'DocumentList<Document>' with 'Document'
+    setUser: (value: Models.Document | Models.Document[] | null) => void; // Replace 'DocumentList<Document>' with 'Document'
     // define other properties here
 };
 
@@ -18,8 +16,7 @@ export const useGlobalContext = () => useContext(GlobalContext);
 
 const GlobalProvider = ({ children }: { children: React.ReactNode }) => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [user, setUser] =
-        useState<null | Models.DocumentList<Models.Document>>(null); // Replace 'DocumentList<Document>' with 'Document'
+    const [user, setUser] = useState<null | Models.Document[]>(null); // Replace 'DocumentList<Document>' with 'Document'
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
