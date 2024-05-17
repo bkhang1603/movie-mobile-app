@@ -62,7 +62,7 @@ const Profile = () => {
                             onPress={logout}
                         >
                             <Image
-                                source={icons.logout}
+                                source={icons.logout as any}
                                 resizeMode="contain"
                                 className="w-6 h-6"
                             />
